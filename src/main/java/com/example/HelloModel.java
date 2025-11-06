@@ -16,9 +16,19 @@ public class HelloModel {
     private final ObservableList<NtfyMessageDto> messages = FXCollections.observableArrayList();
     private final StringProperty messageToSend = new SimpleStringProperty();
 
+    private static String room = "/mytopic1";
+
     public HelloModel(NtfyConnection connection) {
         this.connection = connection;
         receiveMessage();
+    }
+
+    public static String getRoom() {
+        return room;
+    }
+
+    public static void setRoom(String room) {
+        HelloModel.room = room;
     }
 
     public ObservableList<NtfyMessageDto> getMessages() {

@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 public class NtfyConnectionSpy implements NtfyConnection{
 
     String message;
+    Consumer<NtfyMessageDto> handler;
 
     @Override
     public boolean send(String message) {
@@ -14,6 +15,10 @@ public class NtfyConnectionSpy implements NtfyConnection{
 
     @Override
     public void receive(Consumer<NtfyMessageDto> messageHandler) {
+        this.handler = messageHandler;
+    }
 
+    public void simulateIncoming(NtfyMessageDto msg) {
+        if (handler != null) handler.accept(msg);
     }
 }

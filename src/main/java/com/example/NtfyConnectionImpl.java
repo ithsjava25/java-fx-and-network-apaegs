@@ -31,7 +31,7 @@ public class NtfyConnectionImpl implements NtfyConnection {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .POST(HttpRequest.BodyPublishers.ofString(message))
                 .header("Cache", "no")
-                .uri(URI.create(hostName + "/mytopic"))
+                .uri(URI.create(hostName + HelloModel.getRoom()))
                 .build();
         try {
             //Todo: handle long blocking send requests to not freeze the JavaFX thread
@@ -42,7 +42,7 @@ public class NtfyConnectionImpl implements NtfyConnection {
         } catch (IOException e) {
             System.out.println("Error sending message");
         } catch (InterruptedException e) {
-            System.out.println("Interruped sending message");
+            System.out.println("Interrupted sending message");
         }
         return false;
     }
@@ -51,14 +51,14 @@ public class NtfyConnectionImpl implements NtfyConnection {
     public void receive(Consumer<NtfyMessageDto> messageHandler) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .GET()
-                .uri(URI.create(hostName + "/mytopic/json"))
+                .uri(URI.create(hostName + HelloModel.getRoom() + "/json"))
                 .build();
 
         http.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofLines())
                 .thenAccept(response -> response.body()
                         .map(s ->
                                 mapper.readValue(s, NtfyMessageDto.class))
-//                        .filter(message -> message.event().equals("message"))
+                        .filter(message -> message.event().equals("message"))
                         .peek(System.out::println)
                         .forEach(messageHandler));
     }
