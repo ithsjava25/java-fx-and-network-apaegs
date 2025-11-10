@@ -1,6 +1,7 @@
 package com.example;
 
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -15,6 +16,9 @@ public class HelloController {
     private final HelloModel model = new HelloModel(new NtfyConnectionImpl());
 
     @FXML
+    private Button sendButton;
+
+    @FXML
     private Label messageLabel;
 
     @FXML
@@ -23,23 +27,29 @@ public class HelloController {
     @FXML
     private TextArea messageInput;
 
-    // Formatter för tid
     private final DateTimeFormatter timeFormatter =
             DateTimeFormatter.ofPattern("HH:mm:ss")
                     .withZone(ZoneId.systemDefault());
 
     @FXML
     private void initialize() {
-        // Visa hälsning
+
         messageLabel.setText(model.getGreeting());
 
-        // Koppla ListView till modellens meddelanden
         messageView.setItems(model.getMessages());
 
-        // Bind TextArea till modellens property
         messageInput.textProperty().bindBidirectional(model.messageToSendProperty());
 
-        // Snyggare visning av meddelanden
+        sendButton.disableProperty().bind(Bindings.createBooleanBinding(
+                () -> {
+                    String text = messageInput.getText();
+                    return text == null || text.trim().isEmpty();
+                },
+                messageInput.textProperty()
+        ));
+
+
+        // Formatering av message
         messageView.setCellFactory(lv -> new ListCell<>() {
             @Override
             protected void updateItem(NtfyMessageDto msg, boolean empty) {
@@ -53,7 +63,8 @@ public class HelloController {
             }
         });
 
-        // Scrolla automatiskt ner till senaste meddelandet
+
+        // Scrolla ner till senaste meddelandet
         model.getMessages().addListener((javafx.collections.ListChangeListener<NtfyMessageDto>) change -> {
             Platform.runLater(() -> {
                 if (!messageView.getItems().isEmpty()) {

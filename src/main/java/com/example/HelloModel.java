@@ -16,20 +16,12 @@ public class HelloModel {
     private final ObservableList<NtfyMessageDto> messages = FXCollections.observableArrayList();
     private final StringProperty messageToSend = new SimpleStringProperty();
 
-    private static String room = "/mytopic1";
 
     public HelloModel(NtfyConnection connection) {
         this.connection = connection;
         receiveMessage();
     }
 
-    public static String getRoom() {
-        return room;
-    }
-
-    public static void setRoom(String room) {
-        HelloModel.room = room;
-    }
 
     public ObservableList<NtfyMessageDto> getMessages() {
         return messages;
@@ -56,17 +48,31 @@ public class HelloModel {
         return "Welcome to ChatApp, made in JavaFX " + javafxVersion + ", running on Java " + javaVersion + ".";
     }
 
-    public void sendMessage() {
+    public boolean sendMessage() {
         String msg = messageToSend.get();
         if (msg == null || msg.isBlank()) {
             System.out.println("Nothing to send!");
-            return;
+            return false;
         }
+
         connection.send(msg);
+        return true;
+    }
+
+    public boolean canSendMessage() {
+        String msg = messageToSend.get();
+        return msg != null && !msg.isBlank();
     }
 
 
     public void receiveMessage() {
-        connection.receive(m -> Platform.runLater(() -> messages.add(m)));
+        connection.receive(m -> {
+            if (m == null) return;
+            String text = m.message();
+            if (text == null || text.isBlank()) return;
+
+            Platform.runLater(() -> messages.add(m));
+        });
     }
+
 }

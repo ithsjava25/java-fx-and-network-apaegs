@@ -20,7 +20,7 @@
 
     <HBox spacing="10" alignment="CENTER">
         <TextArea fx:id="messageInput" prefHeight="50" prefWidth="300" wrapText="true"/>
-        <Button text="Send message" onAction="#sendMessage" />
+        <Button fx:id="sendButton" text="Send message" onAction="#sendMessage" />
     </HBox>
 
 </VBox>
