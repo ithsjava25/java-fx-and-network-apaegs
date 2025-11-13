@@ -77,9 +77,12 @@ public class HelloModel {
 
         connection.send(msg, success -> {
             if (success) {
-                // Töm först på FX-tråden
-                runOnFx(() -> messageToSend.set(""));
-                // Callback alltid efter send, utanför FX-tråden
+                // Töm ENDAST om messageToSend fortfarande innehåller det meddelande vi skickade
+                runOnFx(() -> {
+                    if (msg.equals(messageToSend.get())) {
+                        messageToSend.set("");
+                    }
+                });
                 callback.accept(true);
             } else {
                 System.out.println("Failed to send message!");
