@@ -8,10 +8,11 @@ public class NtfyConnectionSpy implements NtfyConnection{
     Consumer<NtfyMessageDto> handler;
 
     @Override
-    public boolean send(String message) {
+    public void send(String message, Consumer<Boolean> callback) {
         this.message = message;
-        return true;
+        new Thread(() -> callback.accept(true)).start();
     }
+
 
     @Override
     public void receive(Consumer<NtfyMessageDto> messageHandler) {

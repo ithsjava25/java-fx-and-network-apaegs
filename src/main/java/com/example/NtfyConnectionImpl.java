@@ -27,25 +27,25 @@ public class NtfyConnectionImpl implements NtfyConnection {
     }
 
     @Override
-    public boolean send(String message) {
+    public void send(String message, Consumer<Boolean> callback) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .POST(HttpRequest.BodyPublishers.ofString(message))
                 .header("Cache", "no")
                 .uri(URI.create(hostName + "/mytopic"))
                 .build();
-        try {
-            //Todo: handle long blocking send requests to not freeze the JavaFX thread
-            //1. Use thread send message?
-            //2. Use async?
-            var reponse = http.send(httpRequest, HttpResponse.BodyHandlers.discarding());
-            return true;
-        } catch (IOException e) {
-            System.out.println("Error sending message");
-        } catch (InterruptedException e) {
-            System.out.println("Interrupted sending message");
-        }
-        return false;
+
+        http.sendAsync(httpRequest, HttpResponse.BodyHandlers.discarding())
+                .thenApply(response -> {
+                    // Returnerar true om status är 2xx
+                    return response.statusCode() / 100 == 2;
+                })
+                .exceptionally(ex -> {
+                    System.err.println("Error sending message: " + ex.getMessage());
+                    return false;
+                })
+                .thenAccept(callback); // anropar callback med resultat
     }
+
 
     @Override
     public void receive(Consumer<NtfyMessageDto> messageHandler) {
@@ -56,9 +56,16 @@ public class NtfyConnectionImpl implements NtfyConnection {
 
         http.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofLines())
                 .thenAccept(response -> response.body()
-                        .map(s ->
-                                mapper.readValue(s, NtfyMessageDto.class))
-                        .filter(message -> message.event().equals("message"))
+                        .map(s -> {
+                            try {
+                                return mapper.readValue(s, NtfyMessageDto.class);
+                            } catch (Exception e) {
+                                System.err.println("Failed to parse message: " + e.getMessage());
+                                return null;
+                            }
+                        })
+                        .filter(Objects::nonNull)
+//                    .filter(message -> message.event().equals("message"))
                         .peek(System.out::println)
                         .forEach(messageHandler));
     }

@@ -6,6 +6,8 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.util.function.Consumer;
+
 /**
  * Model layer: encapsulates application data and business logic.
  */
@@ -45,19 +47,29 @@ public class HelloModel {
     public String getGreeting() {
         String javaVersion = System.getProperty("java.version");
         String javafxVersion = System.getProperty("javafx.version");
-        return "Welcome to ChatApp, made in JavaFX " + javafxVersion + ", running on Java " + javaVersion + ".";
+        return "YadaYada";
     }
 
-    public boolean sendMessage() {
+    public void sendMessageAsync(Consumer<Boolean> callback) {
         String msg = messageToSend.get();
         if (msg == null || msg.isBlank()) {
             System.out.println("Nothing to send!");
-            return false;
+            callback.accept(false);
+            return;
         }
 
-        connection.send(msg);
-        return true;
+        connection.send(msg, success -> {
+            if (success) {
+                Platform.runLater(() -> messageToSend.set(""));
+            } else {
+                System.out.println("Failed to send message!");
+            }
+            callback.accept(success);
+
+        });
     }
+
+
 
     public boolean canSendMessage() {
         String msg = messageToSend.get();
