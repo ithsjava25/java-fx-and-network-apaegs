@@ -18,18 +18,10 @@ class HelloModelTest {
 
     @BeforeAll
     static void initToolkit() {
-        try {
-            if (!Platform.isFxApplicationThread()) {
-                Platform.startup(() -> {});
-            }
-        } catch (UnsupportedOperationException e) {
-
-            System.out.println("Headless environment: skipping JavaFX initialization");
-        } catch (IllegalStateException ignored) {
-
+        if (!Platform.isFxApplicationThread()) {
+            Platform.startup(() -> {});
         }
     }
-
 
     @Test
     void sendMessageCallsConnectionWithMessageToSend() throws InterruptedException {

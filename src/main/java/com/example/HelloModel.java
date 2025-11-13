@@ -72,6 +72,11 @@ public class HelloModel {
         return "YadaChat";
     }
 
+    public boolean canSendMessage() {
+        String msg = messageToSend.get();
+        return msg != null && !msg.isBlank();
+    }
+
     public void sendMessageAsync(Consumer<Boolean> callback) {
         String msg = messageToSend.get();
         if (msg == null || msg.isBlank()) {
@@ -80,28 +85,29 @@ public class HelloModel {
             return;
         }
 
-        connection.send(msg, success -> {
-            if (success) {
-                Platform.runLater(() -> messageToSend.set(""));
-            } else {
-                System.out.println("Failed to send message!");
-            }
+        connection.send(msg, success -> runOnFx(() -> {
+            if (success) messageToSend.set("");
+            else System.out.println("Failed to send message!");
             callback.accept(success);
-        });
-    }
-
-    public boolean canSendMessage() {
-        String msg = messageToSend.get();
-        return msg != null && !msg.isBlank();
+        }));
     }
 
     public void receiveMessage() {
         connection.receive(m -> {
-            if (m == null) return;
-            String text = m.message();
-            if (text == null || text.isBlank()) return;
-
-            Platform.runLater(() -> messages.add(m));
+            if (m == null || m.message() == null || m.message().isBlank()) return;
+            runOnFx(() -> messages.add(m));
         });
+    }
+
+    /**
+     * Kör task på FX-tråden om möjligt, annars inline (t.ex. i tester/headless)
+     */
+    private static void runOnFx(Runnable task) {
+        try {
+            if (Platform.isFxApplicationThread()) task.run();
+            else Platform.runLater(task);
+        } catch (IllegalStateException notInitialized) {
+            task.run();
+        }
     }
 }
