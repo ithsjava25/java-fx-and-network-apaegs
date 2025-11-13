@@ -18,15 +18,11 @@ class HelloModelTest {
 
     @BeforeAll
     static void initToolkit() {
-        try {
-            if (!Platform.isFxApplicationThread()) {
-                Platform.startup(() -> {});
-            }
-        } catch (UnsupportedOperationException e) {
-            System.out.println("Headless environment: skipping JavaFX initialization");
-        } catch (IllegalStateException ignored) {
-        }
+        // Inget Platform.startup() här
+        // runOnFx i modellen hanterar headless-miljön
+        System.out.println("Skipping FX initialization for headless test.");
     }
+
 
 
     @Test
@@ -281,11 +277,7 @@ class HelloModelTest {
 
         latch.await(1, TimeUnit.SECONDS);
 
-        CountDownLatch fxLatch = new CountDownLatch(1);
-        Platform.runLater(fxLatch::countDown);
-        fxLatch.await(500, TimeUnit.MILLISECONDS);
-
-        // Assert
+        // Assert direkt, inget fxLatch behövs
         assertThat(model.getMessageToSend()).isEmpty();
     }
 
