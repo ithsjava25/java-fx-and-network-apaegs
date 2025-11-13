@@ -9,7 +9,6 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 
-import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
@@ -46,7 +45,7 @@ public class HelloController {
     private void initialize() {
         messageLabel.setText(model.getGreeting());
 
-        // Visa nuvarande rum
+
         topicLabel.setText("/" + model.getCurrentTopic());
         model.currentTopicProperty().addListener((obs, oldVal, newVal) -> {
             topicLabel.setText("/" + newVal);
@@ -64,7 +63,6 @@ public class HelloController {
                 messageInput.textProperty()
         ));
 
-        // Disable change topic button när input är tom
         if (changeTopicButton != null) {
             changeTopicButton.disableProperty().bind(Bindings.createBooleanBinding(
                     () -> {

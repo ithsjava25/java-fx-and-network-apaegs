@@ -14,13 +14,12 @@ public interface NtfyConnection {
 
     void receive(Consumer<NtfyMessageDto> messageHandler);
 
-    // Nya metoder för topic-hantering
     default String getCurrentTopic() {
         return "mytopic";
     }
 
     default void setCurrentTopic(String topic) {
-        // Default implementation gör ingenting
+
     }
 
     default String getUserId() {

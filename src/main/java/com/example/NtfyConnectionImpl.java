@@ -3,7 +3,6 @@ package com.example;
 import io.github.cdimascio.dotenv.Dotenv;
 import tools.jackson.databind.ObjectMapper;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -55,14 +54,14 @@ public class NtfyConnectionImpl implements NtfyConnection {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .POST(HttpRequest.BodyPublishers.ofString(message))
                 .header("Cache", "no")
-                .header("X-User-Id", userId)  // Lägg till användar-ID i header
+                .header("X-User-Id", userId)
                 .uri(URI.create(hostName + "/" + currentTopic))
                 .build();
 
         http.sendAsync(httpRequest, HttpResponse.BodyHandlers.discarding())
                 .thenApply(response -> response.statusCode() / 100 == 2)
                 .exceptionally(ex -> {
-                    System.err.println("Error sending message: " + ex.getMessage());
+                    System.out.println("Error sending message: " + ex.getMessage());
                     return false;
                 })
                 .thenAccept(callback);
@@ -81,7 +80,7 @@ public class NtfyConnectionImpl implements NtfyConnection {
                             try {
                                 return mapper.readValue(s, NtfyMessageDto.class);
                             } catch (Exception e) {
-                                System.err.println("Failed to parse message: " + e.getMessage());
+                                System.out.println("Failed to parse message: " + e.getMessage());
                                 return null;
                             }
                         })
