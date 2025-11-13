@@ -5,7 +5,7 @@ import javafx.application.Platform;
 public class FxUtils {
 
     /**
-     * Kör task på FX-tråden om möjligt, annars inline (t.ex. i tester/headless)
+     * Execute task on FX-thread if possible, otherwise inline.
      */
     static void runOnFx(Runnable task) {
         try {
