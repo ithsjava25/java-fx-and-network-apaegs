@@ -88,8 +88,8 @@ public class HelloModel {
         connection.send(msg, success -> {
             if (success) {
                 runOnFx(() -> {
-                    messageToSend.set("");
-                    callback.accept(true); // callback efter att meddelandet tömts
+                    messageToSend.set(""); // töm först
+                    callback.accept(true);  // callback **efter** tömning
                 });
             } else {
                 System.out.println("Failed to send message!");
@@ -97,6 +97,7 @@ public class HelloModel {
             }
         });
     }
+
 
 
     public void receiveMessage() {
@@ -114,7 +115,9 @@ public class HelloModel {
             if (Platform.isFxApplicationThread()) task.run();
             else Platform.runLater(task);
         } catch (IllegalStateException notInitialized) {
+            // JavaFX toolkit not initialized (t.ex. vid unit tests): kör inline
             task.run();
         }
     }
+
 }
