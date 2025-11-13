@@ -6,6 +6,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.util.Objects;
+
 public class HelloFX extends Application {
 
     @Override
@@ -17,7 +19,7 @@ public class HelloFX extends Application {
         stage.setScene(scene);
         stage.show();
 
-        scene.getStylesheets().add(HelloFX.class.getResource("style.css").toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(HelloFX.class.getResource("style.css")).toExternalForm());
     }
 
     public static void main(String[] args) {
