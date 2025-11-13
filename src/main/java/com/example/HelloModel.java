@@ -8,6 +8,10 @@ import javafx.collections.ObservableList;
 
 import java.util.function.Consumer;
 
+/**
+ * Model layer: encapsulates application data and business logic.
+ */
+
 public class HelloModel {
 
     private final NtfyConnection connection;
@@ -58,10 +62,14 @@ public class HelloModel {
         return connection.getUserId();
     }
 
+    /**
+     * Returns a greeting based on the current Java and JavaFX versions.
+     */
+
     public String getGreeting() {
         String javaVersion = System.getProperty("java.version");
         String javafxVersion = System.getProperty("javafx.version");
-        return "YadaYada";
+        return "YadaChat";
     }
 
     public void sendMessageAsync(Consumer<Boolean> callback) {

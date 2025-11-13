@@ -12,6 +12,10 @@ import javafx.scene.layout.HBox;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Controller layer: mediates between the view (FXML) and the model.
+ */
+
 public class HelloController {
 
     private final HelloModel model = new HelloModel(new NtfyConnectionImpl());
@@ -45,6 +49,7 @@ public class HelloController {
     private void initialize() {
         messageLabel.setText(model.getGreeting());
 
+        Platform.runLater(() -> messageInput.requestFocus());
 
         topicLabel.setText("/" + model.getCurrentTopic());
         model.currentTopicProperty().addListener((obs, oldVal, newVal) -> {
@@ -73,7 +78,7 @@ public class HelloController {
             ));
         }
 
-        // Formatering av meddelanden
+
         messageView.setCellFactory(lv -> new ListCell<>() {
             @Override
             protected void updateItem(NtfyMessageDto msg, boolean empty) {
@@ -124,6 +129,7 @@ public class HelloController {
         model.sendMessageAsync(success -> {
             if (success) {
                 Platform.runLater(() -> messageInput.clear());
+                Platform.runLater(() -> messageInput.requestFocus());
             } else {
                 Platform.runLater(() -> {
                     Alert alert = new Alert(Alert.AlertType.ERROR);

@@ -15,7 +15,7 @@ public class HelloFX extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloFX.class.getResource("hello-view.fxml"));
         Parent root = fxmlLoader.load();
         Scene scene = new Scene(root, 768, 576);
-        stage.setTitle("YadaYada");
+        stage.setTitle("YadaChat");
         stage.setScene(scene);
         stage.show();
 
