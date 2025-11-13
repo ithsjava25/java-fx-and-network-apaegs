@@ -7,9 +7,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.control.ListCell;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -26,28 +24,33 @@ public class HelloController {
     private Label messageLabel;
 
     @FXML
+    private Label topicLabel;
+
+    @FXML
     private ListView<NtfyMessageDto> messageView;
 
     @FXML
     private TextArea messageInput;
 
+    @FXML
+    private TextField topicInput;
+
+    @FXML
+    private Button changeTopicButton;
+
     private final DateTimeFormatter timeFormatter =
             DateTimeFormatter.ofPattern("HH:mm:ss")
                     .withZone(ZoneId.systemDefault());
 
-    private String formatTimestamp(long epochTime) {
-        // Testa om det är millisekunder (större än 10^10)
-        Instant instant = epochTime > 10_000_000_000L
-                ? Instant.ofEpochMilli(epochTime)
-                : Instant.ofEpochSecond(epochTime);
-
-        return timeFormatter.format(instant);
-    }
-
     @FXML
     private void initialize() {
-
         messageLabel.setText(model.getGreeting());
+
+        // Visa nuvarande rum
+        topicLabel.setText("/" + model.getCurrentTopic());
+        model.currentTopicProperty().addListener((obs, oldVal, newVal) -> {
+            topicLabel.setText("/" + newVal);
+        });
 
         messageView.setItems(model.getMessages());
 
@@ -61,9 +64,18 @@ public class HelloController {
                 messageInput.textProperty()
         ));
 
+        // Disable change topic button när input är tom
+        if (changeTopicButton != null) {
+            changeTopicButton.disableProperty().bind(Bindings.createBooleanBinding(
+                    () -> {
+                        String text = topicInput.getText();
+                        return text == null || text.trim().isEmpty();
+                    },
+                    topicInput.textProperty()
+            ));
+        }
 
-        // Formatering av message
-
+        // Formatering av meddelanden
         messageView.setCellFactory(lv -> new ListCell<>() {
             @Override
             protected void updateItem(NtfyMessageDto msg, boolean empty) {
@@ -73,28 +85,22 @@ public class HelloController {
                     setText(null);
                     setGraphic(null);
                 } else {
-                    // Chat bubble
+                    // Skapa bubble-label
                     Label bubble = new Label(msg.message());
                     bubble.setWrapText(true);
-                    bubble.setMaxWidth(300);
-                    bubble.getStyleClass().add("chat-bubble");
+                    bubble.setMaxWidth(250);
+                    bubble.setPadding(new Insets(10));
+                    bubble.getStyleClass().add("chat-bubble"); // Basstyle
 
-                    // Timestamp (optional - ta bort om du inte vill ha)
-                    Label timestamp = new Label(formatTimestamp(msg.time()));
-                    timestamp.getStyleClass().add("message-timestamp");
+                    HBox container = new HBox(bubble);
+                    container.setPadding(new Insets(5));
 
-                    VBox messageBox = new VBox(2, bubble, timestamp);
-                    HBox container = new HBox(messageBox);
-                    container.setPadding(new Insets(4));
-
-                    // Olika styling beroende på avsändare
-                    if ("myusername".equals(msg.id())) {
+                    // Använd CSS-klasser för skickat/mottaget
+                    if (model.getUserId().equals(msg.id())) {
                         bubble.getStyleClass().add("chat-bubble-sent");
-                        messageBox.setAlignment(Pos.CENTER_RIGHT);
                         container.setAlignment(Pos.CENTER_RIGHT);
                     } else {
                         bubble.getStyleClass().add("chat-bubble-received");
-                        messageBox.setAlignment(Pos.CENTER_LEFT);
                         container.setAlignment(Pos.CENTER_LEFT);
                     }
 
@@ -103,6 +109,7 @@ public class HelloController {
                 }
             }
         });
+
 
         // Scrolla ner till senaste meddelandet
         model.getMessages().addListener((javafx.collections.ListChangeListener<NtfyMessageDto>) change -> {
@@ -120,10 +127,23 @@ public class HelloController {
             if (success) {
                 Platform.runLater(() -> messageInput.clear());
             } else {
-                // Här kan du visa ett felmeddelande i UI
-                System.err.println("Failed to send message");
+                Platform.runLater(() -> {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Send Failed");
+                    alert.setHeaderText("Failed to send message");
+                    alert.setContentText("Could not send your message. Please try again.");
+                    alert.showAndWait();
+                });
             }
         });
     }
 
+    @FXML
+    private void changeTopic(ActionEvent actionEvent) {
+        String newTopic = topicInput.getText();
+        if (newTopic != null && !newTopic.isBlank()) {
+            model.setCurrentTopic(newTopic);
+            topicInput.clear();
+        }
+    }
 }

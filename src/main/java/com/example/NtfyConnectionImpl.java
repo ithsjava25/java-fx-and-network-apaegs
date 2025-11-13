@@ -15,15 +15,39 @@ public class NtfyConnectionImpl implements NtfyConnection {
 
     private final HttpClient http = HttpClient.newHttpClient();
     private final String hostName;
+    private final String userId;
+    private String currentTopic;
     private final ObjectMapper mapper = new ObjectMapper();
 
     public NtfyConnectionImpl() {
         Dotenv dotenv = Dotenv.load();
-        hostName = Objects.requireNonNull(dotenv.get("HOST_NAME"));
+        this.hostName = Objects.requireNonNull(dotenv.get("HOST_NAME"));
+        this.userId = Objects.requireNonNull(dotenv.get("USER_ID"), "USER_ID");
+        this.currentTopic = dotenv.get("DEFAULT_TOPIC", "mytopic");
     }
 
     public NtfyConnectionImpl(String hostName) {
         this.hostName = hostName;
+        this.userId = "testuser";
+        this.currentTopic = "mytopic";
+    }
+
+    public NtfyConnectionImpl(String hostName, String userId, String topic) {
+        this.hostName = hostName;
+        this.userId = userId;
+        this.currentTopic = topic;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public String getCurrentTopic() {
+        return currentTopic;
+    }
+
+    public void setCurrentTopic(String topic) {
+        this.currentTopic = topic;
     }
 
     @Override
@@ -31,27 +55,24 @@ public class NtfyConnectionImpl implements NtfyConnection {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .POST(HttpRequest.BodyPublishers.ofString(message))
                 .header("Cache", "no")
-                .uri(URI.create(hostName + "/mytopic"))
+                .header("X-User-Id", userId)  // Lägg till användar-ID i header
+                .uri(URI.create(hostName + "/" + currentTopic))
                 .build();
 
         http.sendAsync(httpRequest, HttpResponse.BodyHandlers.discarding())
-                .thenApply(response -> {
-                    // Returnerar true om status är 2xx
-                    return response.statusCode() / 100 == 2;
-                })
+                .thenApply(response -> response.statusCode() / 100 == 2)
                 .exceptionally(ex -> {
                     System.err.println("Error sending message: " + ex.getMessage());
                     return false;
                 })
-                .thenAccept(callback); // anropar callback med resultat
+                .thenAccept(callback);
     }
-
 
     @Override
     public void receive(Consumer<NtfyMessageDto> messageHandler) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .GET()
-                .uri(URI.create(hostName + "/mytopic/json"))
+                .uri(URI.create(hostName + "/" + currentTopic + "/json"))
                 .build();
 
         http.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofLines())
@@ -65,7 +86,6 @@ public class NtfyConnectionImpl implements NtfyConnection {
                             }
                         })
                         .filter(Objects::nonNull)
-//                    .filter(message -> message.event().equals("message"))
                         .peek(System.out::println)
                         .forEach(messageHandler));
     }

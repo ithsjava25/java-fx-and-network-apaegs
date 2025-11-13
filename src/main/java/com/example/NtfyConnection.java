@@ -10,8 +10,20 @@ public interface NtfyConnection {
         return result[0];
     }
 
-    public void send(String message, Consumer<Boolean> callback);
+    void send(String message, Consumer<Boolean> callback);
 
-    public void receive(Consumer<NtfyMessageDto> messageHandler);
+    void receive(Consumer<NtfyMessageDto> messageHandler);
 
+    // Nya metoder för topic-hantering
+    default String getCurrentTopic() {
+        return "mytopic";
+    }
+
+    default void setCurrentTopic(String topic) {
+        // Default implementation gör ingenting
+    }
+
+    default String getUserId() {
+        return "unknown";
+    }
 }

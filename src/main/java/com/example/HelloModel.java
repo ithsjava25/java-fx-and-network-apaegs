@@ -8,22 +8,18 @@ import javafx.collections.ObservableList;
 
 import java.util.function.Consumer;
 
-/**
- * Model layer: encapsulates application data and business logic.
- */
 public class HelloModel {
 
     private final NtfyConnection connection;
-
     private final ObservableList<NtfyMessageDto> messages = FXCollections.observableArrayList();
     private final StringProperty messageToSend = new SimpleStringProperty();
-
+    private final StringProperty currentTopic = new SimpleStringProperty();
 
     public HelloModel(NtfyConnection connection) {
         this.connection = connection;
+        this.currentTopic.set(connection.getCurrentTopic());
         receiveMessage();
     }
-
 
     public ObservableList<NtfyMessageDto> getMessages() {
         return messages;
@@ -41,9 +37,27 @@ public class HelloModel {
         messageToSend.set(message);
     }
 
-    /**
-     * Returns a greeting based on the current Java and JavaFX versions.
-     */
+    public String getCurrentTopic() {
+        return currentTopic.get();
+    }
+
+    public StringProperty currentTopicProperty() {
+        return currentTopic;
+    }
+
+    public void setCurrentTopic(String topic) {
+        if (topic != null && !topic.isBlank()) {
+            connection.setCurrentTopic(topic);
+            this.currentTopic.set(topic);
+            messages.clear();
+            receiveMessage();
+        }
+    }
+
+    public String getUserId() {
+        return connection.getUserId();
+    }
+
     public String getGreeting() {
         String javaVersion = System.getProperty("java.version");
         String javafxVersion = System.getProperty("javafx.version");
@@ -65,17 +79,13 @@ public class HelloModel {
                 System.out.println("Failed to send message!");
             }
             callback.accept(success);
-
         });
     }
-
-
 
     public boolean canSendMessage() {
         String msg = messageToSend.get();
         return msg != null && !msg.isBlank();
     }
-
 
     public void receiveMessage() {
         connection.receive(m -> {
@@ -86,5 +96,4 @@ public class HelloModel {
             Platform.runLater(() -> messages.add(m));
         });
     }
-
 }

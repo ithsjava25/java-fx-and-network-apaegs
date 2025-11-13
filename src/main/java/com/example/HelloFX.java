@@ -12,10 +12,12 @@ public class HelloFX extends Application {
     public void start(Stage stage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloFX.class.getResource("hello-view.fxml"));
         Parent root = fxmlLoader.load();
-        Scene scene = new Scene(root, 640, 480);
-        stage.setTitle("YadaChat");
+        Scene scene = new Scene(root, 768, 576);
+        stage.setTitle("YadaYada");
         stage.setScene(scene);
         stage.show();
+
+        scene.getStylesheets().add(HelloFX.class.getResource("style.css").toExternalForm());
     }
 
     public static void main(String[] args) {
