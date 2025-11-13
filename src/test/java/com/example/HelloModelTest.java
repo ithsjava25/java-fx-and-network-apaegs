@@ -18,8 +18,7 @@ class HelloModelTest {
 
     @BeforeAll
     static void initToolkit() {
-        // Inget Platform.startup() här
-        // runOnFx i modellen hanterar headless-miljön
+
         System.out.println("Skipping FX initialization for headless test.");
     }
 
@@ -274,7 +273,6 @@ class HelloModelTest {
 
         // Act
         model.sendMessageAsync(success -> latch.countDown());
-
 
         latch.await(1, TimeUnit.SECONDS);
 
