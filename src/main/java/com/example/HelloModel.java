@@ -85,12 +85,19 @@ public class HelloModel {
             return;
         }
 
-        connection.send(msg, success -> runOnFx(() -> {
-            if (success) messageToSend.set("");
-            else System.out.println("Failed to send message!");
-            callback.accept(success);
-        }));
+        connection.send(msg, success -> {
+            if (success) {
+                runOnFx(() -> {
+                    messageToSend.set("");
+                    callback.accept(true); // callback efter att meddelandet tömts
+                });
+            } else {
+                System.out.println("Failed to send message!");
+                callback.accept(false);
+            }
+        });
     }
+
 
     public void receiveMessage() {
         connection.receive(m -> {

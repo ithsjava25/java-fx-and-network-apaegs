@@ -275,6 +275,7 @@ class HelloModelTest {
         // Act
         model.sendMessageAsync(success -> latch.countDown());
 
+
         latch.await(1, TimeUnit.SECONDS);
 
         // Assert direkt, inget fxLatch behövs
