@@ -8,10 +8,6 @@ import javafx.collections.ObservableList;
 
 import java.util.function.Consumer;
 
-/**
- * Model layer: encapsulates application data and business logic.
- */
-
 public class HelloModel {
 
     private final NtfyConnection connection;
@@ -62,13 +58,7 @@ public class HelloModel {
         return connection.getUserId();
     }
 
-    /**
-     * Returns a greeting based on the current Java and JavaFX versions.
-     */
-
     public String getGreeting() {
-        String javaVersion = System.getProperty("java.version");
-        String javafxVersion = System.getProperty("javafx.version");
         return "YadaChat";
     }
 
@@ -87,19 +77,16 @@ public class HelloModel {
 
         connection.send(msg, success -> {
             if (success) {
-                runOnFx(() -> {
-                    messageToSend.set(""); // töm först
-                    callback.accept(true);  // callback **efter** tömning
-                });
+                // Töm först på FX-tråden
+                runOnFx(() -> messageToSend.set(""));
+                // Callback alltid efter send, utanför FX-tråden
+                callback.accept(true);
             } else {
                 System.out.println("Failed to send message!");
                 callback.accept(false);
             }
         });
     }
-
-
-
 
     public void receiveMessage() {
         connection.receive(m -> {
@@ -116,9 +103,8 @@ public class HelloModel {
             if (Platform.isFxApplicationThread()) task.run();
             else Platform.runLater(task);
         } catch (IllegalStateException notInitialized) {
-            // JavaFX toolkit not initialized (t.ex. vid unit tests): kör inline
+            // JavaFX toolkit inte initialiserad (t.ex. vid unit tests): kör inline
             task.run();
         }
     }
-
 }
