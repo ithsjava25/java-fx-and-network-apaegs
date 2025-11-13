@@ -8,6 +8,8 @@ import javafx.collections.ObservableList;
 
 import java.util.function.Consumer;
 
+import static com.example.FxUtils.runOnFx;
+
 public class HelloModel {
 
     private final NtfyConnection connection;
@@ -77,7 +79,6 @@ public class HelloModel {
 
         connection.send(msg, success -> {
             if (success) {
-                // Töm ENDAST om messageToSend fortfarande innehåller det meddelande vi skickade
                 runOnFx(() -> {
                     if (msg.equals(messageToSend.get())) {
                         messageToSend.set("");
@@ -98,16 +99,5 @@ public class HelloModel {
         });
     }
 
-    /**
-     * Kör task på FX-tråden om möjligt, annars inline (t.ex. i tester/headless)
-     */
-    private static void runOnFx(Runnable task) {
-        try {
-            if (Platform.isFxApplicationThread()) task.run();
-            else Platform.runLater(task);
-        } catch (IllegalStateException notInitialized) {
-            // JavaFX toolkit inte initialiserad (t.ex. vid unit tests): kör inline
-            task.run();
-        }
-    }
+
 }
