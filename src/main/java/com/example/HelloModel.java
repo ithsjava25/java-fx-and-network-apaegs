@@ -100,6 +100,7 @@ public class HelloModel {
 
 
 
+
     public void receiveMessage() {
         connection.receive(m -> {
             if (m == null || m.message() == null || m.message().isBlank()) return;
