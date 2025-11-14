@@ -12,7 +12,6 @@ public interface NtfyConnection {
      */
     void send(String message, Consumer<Boolean> callback);
 
-
     /**
      * Registers a handler to receive incoming messages.
      * Calling this multiple times replaces the previous handler.
@@ -23,12 +22,7 @@ public interface NtfyConnection {
 
     void setCurrentTopic(String topic);
 
-
-
-    default String getCurrentTopic() {
-        return "mytopic";
-    }
-
+    default String getCurrentTopic() { return "mytopic"; }
     default String getUserId() {
         return "unknown";
     }

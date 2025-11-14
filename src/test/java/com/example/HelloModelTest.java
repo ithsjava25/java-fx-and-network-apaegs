@@ -12,15 +12,27 @@ import java.util.function.Consumer;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * Test for HelloModel
+ * Verifies sending and receiving messages
+ */
+
 @WireMockTest
 class HelloModelTest {
+
+    /**
+     * Initialize FX toolkit for headless-mode
+     */
 
     @BeforeAll
     static void initToolkit() {
         System.out.println("Skipping FX initialization for headless test.");
     }
 
-
+    /**
+     * Verifies that sendMessageAsync sends the correct message to the connection
+     * @throws InterruptedException
+     */
 
     @Test
     void sendMessageCallsConnectionWithMessageToSend() throws InterruptedException {
@@ -42,6 +54,11 @@ class HelloModelTest {
         assertThat(spy.message).isEqualTo("Hello World");
     }
 
+
+    /**
+     * Verifies that sending an empty string returns false and is not sent
+     * @throws InterruptedException
+     */
     @Test
     void sendMessageReturnsFalseForEmptyString() throws InterruptedException {
         // Arrange
@@ -68,6 +85,10 @@ class HelloModelTest {
         assertThat(spy.message).isNull();
     }
 
+    /**
+     * Verifies that sending a null message returns false and is not sent
+     * @throws InterruptedException
+     */
     @Test
     void sendMessageReturnsFalseForNull() throws InterruptedException {
         // Arrange
@@ -94,6 +115,10 @@ class HelloModelTest {
         assertThat(spy.message).isNull();
     }
 
+    /**
+     * Verifies that received messages are added to the model
+     * @throws InterruptedException
+     */
     @Test
     void receiveMessageShouldAddMessageToModel() throws InterruptedException {
         // Arrange
@@ -122,6 +147,10 @@ class HelloModelTest {
         assertThat(model.getMessages()).contains(message);
     }
 
+    /**
+     * Verifies that null messages are ignored
+     * @throws InterruptedException
+     */
     @Test
     void receiveMessageShouldIgnoreNullMessage() throws InterruptedException {
         // Arrange
@@ -146,6 +175,10 @@ class HelloModelTest {
         assertThat(model.getMessages()).isEmpty();
     }
 
+    /**
+     * Verifies that empty och blank messages are ignored
+     * @throws InterruptedException
+     */
     @Test
     void receiveMessageShouldIgnoreEmptyOrBlankMessages() throws InterruptedException {
         // Arrange
@@ -174,6 +207,10 @@ class HelloModelTest {
         assertThat(model.getMessages()).isEmpty();
     }
 
+    /**
+     * Verifies that sendMessageAsync handles failed sends correctly
+     * @throws InterruptedException
+     */
     @Test
     void sendMessageAsyncShouldHandleFailedSend() throws InterruptedException {
         // Arrange
@@ -213,6 +250,10 @@ class HelloModelTest {
                 .isEqualTo("Fail this message");
     }
 
+    /**
+     * Verifies that multiple sequential sends work correctly
+     * @throws InterruptedException
+     */
     @Test
     void sendMessageAsyncShouldHandleMultipleSequentialCalls() throws InterruptedException {
         // Arrange
@@ -248,6 +289,10 @@ class HelloModelTest {
                 .isEqualTo("Second");
     }
 
+    /**
+     * Verifies that sendMessageAsync handles exceptions without crashing
+     * @throws InterruptedException
+     */
     @Test
     void sendMessageAsyncShouldHandleExceptionGracefully() throws InterruptedException {
         // Arrange
@@ -299,6 +344,10 @@ class HelloModelTest {
         }
     }
 
+    /**
+     * Verifies that the message is cleared after a successful send
+     * @throws InterruptedException
+     */
     @Test
     void messageToSendIsClearedAfterSuccessfulSendMessage() throws InterruptedException {
         // Arrange
@@ -323,6 +372,10 @@ class HelloModelTest {
                 .isEmpty();
     }
 
+    /**
+     * Verifies that multiple received messages are added in the correct order
+     * @throws InterruptedException
+     */
     @Test
     void multipleReceivedMessagesShouldBeAddedInOrder() throws InterruptedException {
         // Arrange
@@ -363,6 +416,12 @@ class HelloModelTest {
                 .isEqualTo(message3);
     }
 
+    /**
+     * Integration test
+     * Verifies sending a message to a fake server using WireMock
+     * @param wmRuntimeInfo
+     * @throws InterruptedException
+     */
     @Test
     void sendMessageToFakeServer(WireMockRuntimeInfo wmRuntimeInfo) throws InterruptedException {
         // Arrange
