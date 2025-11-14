@@ -184,6 +184,11 @@ class HelloModelTest {
             }
             @Override
             public void receive(Consumer<NtfyMessageDto> messageHandler) { }
+
+            @Override
+            public void setCurrentTopic(String topic) {
+
+            }
         };
         var model = new HelloModel(failingConnection);
         model.setMessageToSend("Fail this message");
@@ -253,6 +258,11 @@ class HelloModelTest {
             }
             @Override
             public void receive(Consumer<NtfyMessageDto> messageHandler) { }
+
+            @Override
+            public void setCurrentTopic(String topic) {
+
+            }
         };
         var model = new HelloModel(crashingConnection);
         model.setMessageToSend("Crash this");

@@ -14,9 +14,7 @@ public interface NtfyConnection {
         return "mytopic";
     }
 
-    default void setCurrentTopic(String topic) {
-
-    }
+    void setCurrentTopic(String topic);
 
     default String getUserId() {
         return "unknown";

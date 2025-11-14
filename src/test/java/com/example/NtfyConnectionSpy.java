@@ -20,6 +20,11 @@ public class NtfyConnectionSpy implements NtfyConnection{
         this.handler = messageHandler;
     }
 
+    @Override
+    public void setCurrentTopic(String topic) {
+
+    }
+
     public void simulateIncoming(NtfyMessageDto msg) {
         Consumer<NtfyMessageDto> localHandler = handler;
         if (localHandler != null) {
