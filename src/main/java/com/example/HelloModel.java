@@ -86,17 +86,17 @@ public class HelloModel {
                         if (msg.equals(messageToSend.get())) {
                             messageToSend.set("");
                         }
+                        callback.accept(true);
                     });
-                    callback.accept(true);
                 } else {
-                    System.out.println("Failed to send message!");
                     callback.accept(false);
                 }
+
             });
         } catch (Exception e) {
             System.out.println("Exception while sending message: " + e.getMessage());
             e.printStackTrace();
-            runOnFx(() -> callback.accept(false));
+            callback.accept(false);
         }
     }
 
