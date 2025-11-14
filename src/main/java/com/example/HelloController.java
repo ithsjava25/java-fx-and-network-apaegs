@@ -16,26 +16,34 @@ import javafx.scene.layout.HBox;
 
 public class HelloController {
 
+    /** The main model for handling messages and topics. */
     private final HelloModel model = new HelloModel(new NtfyConnectionImpl());
 
+    /** Button to send a message **/
     @FXML
     private Button sendButton;
 
+    /** Label displaying the name of the program **/
     @FXML
     private Label messageLabel;
 
+    /** Label displaying the name of the current topic **/
     @FXML
     private Label topicLabel;
 
+    /** Listview displaying all the chat messages */
     @FXML
     private ListView<NtfyMessageDto> messageView;
 
+    /** Text area where the user types a message to send */
     @FXML
     private TextArea messageInput;
 
+    /** Text field where the user types a new topic */
     @FXML
     private TextField topicInput;
 
+    /** Botton to change topic **/
     @FXML
     private Button changeTopicButton;
 
@@ -43,6 +51,13 @@ public class HelloController {
 //            DateTimeFormatter.ofPattern("HH:mm:ss")
 //                    .withZone(ZoneId.systemDefault());
 
+
+    /**
+     * Initializes the controller after the FXML is loaded.
+     * Sets up the bindings between the model and UI,
+     * configures the message list view,
+     * and automatically scrolls down to the bottom of the message list
+     */
     @FXML
     private void initialize() {
         messageLabel.setText(model.getGreeting());
@@ -77,6 +92,7 @@ public class HelloController {
         }
 
 
+        // Set up cell-factory to show chat bubbles
         messageView.setCellFactory(lv -> new ListCell<>() {
             @Override
             protected void updateItem(NtfyMessageDto msg, boolean empty) {
@@ -104,9 +120,8 @@ public class HelloController {
 
 
 
-        /**
-         * Scroll down to last message automatically
-         */
+
+        // Scroll down to last message automatically
         model.getMessages().addListener((javafx.collections.ListChangeListener<NtfyMessageDto>) change -> {
             Platform.runLater(() -> {
                 if (!messageView.getItems().isEmpty()) {

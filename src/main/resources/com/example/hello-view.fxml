@@ -14,7 +14,7 @@
       <children>
       
           <!-- Header -->
-          <Label fx:id="messageLabel" styleClass="chat-title" text="Welcome to YadaChat!" />
+          <Label fx:id="messageLabel" styleClass="chat-title" text="YadaChat" />
            <!-- Current room -->
            <Label fx:id="topicLabel" styleClass="topic-label" text="Room: mytopic">
                <padding>
