@@ -2,6 +2,10 @@ package com.example;
 
 import java.util.function.Consumer;
 
+
+/**
+ * Interface for sending and receiving messages over an Ntfy connection.
+ */
 public interface NtfyConnection {
    /**
      * Sends a message asynchronously.
@@ -20,10 +24,25 @@ public interface NtfyConnection {
      */
     void receive(Consumer<NtfyMessageDto> messageHandler);
 
+    /**
+     * Changes the current topic.
+     *
+     * @param topic the new topic name
+     */
     void setCurrentTopic(String topic);
 
+
+    /**
+     * Gets the current topic.
+     *
+     * @return current topic
+     */
     default String getCurrentTopic() { return "mytopic"; }
-    default String getUserId() {
-        return "unknown";
-    }
+
+    /**
+     * Gets the user ID for this connection.
+     *
+     * @return user ID
+     */
+    default String getUserId() { return "unknown"; }
 }

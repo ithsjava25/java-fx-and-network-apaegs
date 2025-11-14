@@ -4,11 +4,15 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-
 import java.util.function.Consumer;
 
 import static com.example.FxUtils.runOnFx;
 
+/**
+ * Model layer for the YadaChat app.
+ * Holds current topic, outgoing message text and received messages.
+ * Communicates with an {@link NtfyConnection}.
+ */
 public class HelloModel {
 
     private final NtfyConnection connection;
@@ -16,6 +20,11 @@ public class HelloModel {
     private final StringProperty messageToSend = new SimpleStringProperty();
     private final StringProperty currentTopic = new SimpleStringProperty();
 
+    /**
+     * Creates a new model using the given connection.
+     *
+     * @param connection the Ntfy connection; must not be null
+     */
     public HelloModel(NtfyConnection connection) {
         if (connection == null) {
             throw new IllegalArgumentException("connection cannot be null");
@@ -49,6 +58,11 @@ public class HelloModel {
         return currentTopic;
     }
 
+    /**
+     * Changes the active topic and clears old messages.
+     *
+     * @param topic new topic name
+     */
     public void setCurrentTopic(String topic) {
         if (topic != null && !topic.isBlank()) {
             connection.setCurrentTopic(topic);

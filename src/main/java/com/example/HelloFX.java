@@ -15,6 +15,14 @@ import java.util.Objects;
 
 public class HelloFX extends Application {
 
+
+    /**
+     * Called when the JavaFX application is launched.
+     * Loads the FXML layout, sets up the scene, applies the CSS stylesheet, and displays the stage.
+     *
+     * @param stage the primary stage for this application
+     * @throws Exception if the FXML file cannot be loaded
+     */
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloFX.class.getResource("hello-view.fxml"));
@@ -31,6 +39,11 @@ public class HelloFX extends Application {
 
     }
 
+    /**
+     * Main method, launches the JavaFX application.
+     *
+     * @param args command-line arguments
+     */
     public static void main(String[] args) {
         launch();
     }
