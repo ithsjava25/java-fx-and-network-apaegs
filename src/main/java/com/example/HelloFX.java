@@ -8,6 +8,11 @@ import javafx.stage.Stage;
 
 import java.util.Objects;
 
+/**
+ * Main JavaFX application class for YadaChat.
+ * Sets up the primary stage, loads the FXML view, applies the stylesheet, and shows the window.
+ */
+
 public class HelloFX extends Application {
 
     @Override
