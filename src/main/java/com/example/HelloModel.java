@@ -34,26 +34,32 @@ public class HelloModel {
         receiveMessage();
     }
 
+    /** Returns the observable list of messages. */
     public ObservableList<NtfyMessageDto> getMessages() {
         return messages;
     }
 
+    /** Returns the current text in the message input. */
     public String getMessageToSend() {
         return messageToSend.get();
     }
 
+    /** Returns the property for the message to send. */
     public StringProperty messageToSendProperty() {
         return messageToSend;
     }
 
+    /** Sets the message to send. */
     public void setMessageToSend(String message) {
         messageToSend.set(message);
     }
 
+    /** Returns the current topic. */
     public String getCurrentTopic() {
         return currentTopic.get();
     }
 
+    /** Returns the property for the current topic. */
     public StringProperty currentTopicProperty() {
         return currentTopic;
     }
@@ -72,10 +78,12 @@ public class HelloModel {
         }
     }
 
+    /** Returns the current user ID. */
     public String getUserId() {
         return connection.getUserId();
     }
 
+    /** Returns the greeting text for the chat. */
     public String getGreeting() {
         return "YadaChat";
     }
