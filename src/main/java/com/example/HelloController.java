@@ -9,8 +9,6 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 
 /**
  * Controller layer: mediates between the view (FXML) and the model.
@@ -41,9 +39,9 @@ public class HelloController {
     @FXML
     private Button changeTopicButton;
 
-    private final DateTimeFormatter timeFormatter =
-            DateTimeFormatter.ofPattern("HH:mm:ss")
-                    .withZone(ZoneId.systemDefault());
+//    private final DateTimeFormatter timeFormatter =
+//            DateTimeFormatter.ofPattern("HH:mm:ss")
+//                    .withZone(ZoneId.systemDefault());
 
     @FXML
     private void initialize() {

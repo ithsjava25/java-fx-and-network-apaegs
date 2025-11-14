@@ -1,6 +1,5 @@
 package com.example;
 
-import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -67,10 +66,10 @@ public class HelloModel {
         return "YadaChat";
     }
 
-    public boolean canSendMessage() {
-        String msg = messageToSend.get();
-        return msg != null && !msg.isBlank();
-    }
+//    public boolean canSendMessage() {
+//        String msg = messageToSend.get();
+//        return msg != null && !msg.isBlank();
+//    }
 
     public void sendMessageAsync(Consumer<Boolean> callback) {
         String msg = messageToSend.get();
@@ -95,7 +94,7 @@ public class HelloModel {
                 }
             });
         } catch (Exception e) {
-            System.err.println("Exception while sending message: " + e.getMessage());
+            System.out.println("Exception while sending message: " + e.getMessage());
             e.printStackTrace();
             runOnFx(() -> callback.accept(false));
         }
