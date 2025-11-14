@@ -2,7 +2,6 @@ package com.example;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
-import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -18,11 +17,8 @@ class HelloModelTest {
 
     @BeforeAll
     static void initToolkit() {
-
         System.out.println("Skipping FX initialization for headless test.");
     }
-
-
 
     @Test
     void sendMessageCallsConnectionWithMessageToSend() throws InterruptedException {
@@ -39,7 +35,8 @@ class HelloModelTest {
         boolean completed = latch.await(500, TimeUnit.MILLISECONDS);
 
         // Assert
-        assertThat(completed).isTrue();
+        assertThat(completed)
+                .isTrue();
         assertThat(spy.message).isEqualTo("Hello World");
     }
 
@@ -59,10 +56,13 @@ class HelloModelTest {
             latch.countDown();
         });
 
-        latch.await(500, TimeUnit.MILLISECONDS);
+        boolean completed = latch.await(500, TimeUnit.MILLISECONDS);
 
         // Assert
-        assertThat(result[0]).isFalse();
+        assertThat(completed)
+                .isTrue();
+        assertThat(result[0])
+                .isFalse();
         assertThat(spy.message).isNull();
     }
 
@@ -82,10 +82,13 @@ class HelloModelTest {
             latch.countDown();
         });
 
-        latch.await(500, TimeUnit.MILLISECONDS);
+        boolean completed = latch.await(500, TimeUnit.MILLISECONDS);
 
         // Assert
-        assertThat(result[0]).isFalse();
+        assertThat(completed)
+                .isTrue();
+        assertThat(result[0])
+                .isFalse();
         assertThat(spy.message).isNull();
     }
 
@@ -112,7 +115,8 @@ class HelloModelTest {
         boolean completed = latch.await(1, TimeUnit.SECONDS);
 
         // Assert
-        assertThat(completed).isTrue();
+        assertThat(completed)
+                .isTrue();
         assertThat(model.getMessages()).contains(message);
     }
 
@@ -132,9 +136,11 @@ class HelloModelTest {
         // Act
         spy.simulateIncoming(null);
 
-        // Assert
         boolean noAdd = latch.await(500, TimeUnit.MILLISECONDS);
-        assertThat(noAdd).isFalse();
+
+        // Assert
+        assertThat(noAdd)
+                .isFalse();
         assertThat(model.getMessages()).isEmpty();
     }
 
@@ -158,9 +164,11 @@ class HelloModelTest {
         spy.simulateIncoming(blank);
         spy.simulateIncoming(empty);
 
-        // Assert
         boolean noAdd = latch.await(500, TimeUnit.MILLISECONDS);
-        assertThat(noAdd).isFalse();
+
+        // Assert
+        assertThat(noAdd)
+                .isFalse();
         assertThat(model.getMessages()).isEmpty();
     }
 
@@ -187,13 +195,15 @@ class HelloModelTest {
             latch.countDown();
         });
 
-        latch.await(500, TimeUnit.MILLISECONDS);
-
-
+        boolean completed = latch.await(500, TimeUnit.MILLISECONDS);
 
         // Assert
-        assertThat(result[0]).isFalse();
-        assertThat(model.getMessageToSend()).isEqualTo("Fail this message");
+        assertThat(completed)
+                .isTrue();
+        assertThat(result[0])
+                .isFalse();
+        assertThat(model.getMessageToSend())
+                .isEqualTo("Fail this message");
     }
 
     @Test
@@ -218,12 +228,17 @@ class HelloModelTest {
             latch.countDown();
         });
 
-        latch.await(1, TimeUnit.SECONDS);
+        boolean completed = latch.await(1, TimeUnit.SECONDS);
 
         // Assert
-        assertThat(results[0]).isTrue();
-        assertThat(results[1]).isTrue();
-        assertThat(spy.message).isEqualTo("Second");
+        assertThat(completed)
+                .isTrue();
+        assertThat(results[0])
+                .isTrue();
+        assertThat(results[1])
+                .isTrue();
+        assertThat(spy.message)
+                .isEqualTo("Second");
     }
 
     @Test
@@ -241,7 +256,8 @@ class HelloModelTest {
         model.setMessageToSend("Crash this");
 
         CountDownLatch latch = new CountDownLatch(1);
-        final boolean[] result = new boolean[1];
+        final boolean[] result = {false};
+        final boolean[] exceptionCaught = {false};
 
         // Act
         try {
@@ -250,17 +266,26 @@ class HelloModelTest {
                 latch.countDown();
             });
         } catch (Exception e) {
-            result[0] = false;
+            exceptionCaught[0] = true;
             latch.countDown();
         }
 
-        latch.await(500, TimeUnit.MILLISECONDS);
+        boolean completed = latch.await(500, TimeUnit.MILLISECONDS);
 
         // Assert
-        assertThat(result[0]).isFalse();
+        assertThat(completed)
+                .isTrue();
+
+        // Om exception kastades direkt (synkront)
+        if (exceptionCaught[0]) {
+            assertThat(exceptionCaught[0])
+                    .isTrue();
+        } else {
+            // Om callback kördes (asynkront men med fel)
+            assertThat(result[0])
+                    .isFalse();
+        }
     }
-
-
 
     @Test
     void messageToSendIsClearedAfterSuccessfulSendMessage() throws InterruptedException {
@@ -274,10 +299,16 @@ class HelloModelTest {
         // Act
         model.sendMessageAsync(success -> latch.countDown());
 
-        latch.await(1, TimeUnit.SECONDS);
+        boolean completed = latch.await(1, TimeUnit.SECONDS);
 
-        // Assert direkt, inget fxLatch behövs
-        assertThat(model.getMessageToSend()).isEmpty();
+        // Assert
+        assertThat(completed)
+                .isTrue();
+
+        Thread.sleep(100);
+
+        assertThat(model.getMessageToSend())
+                .isEmpty();
     }
 
     @Test
@@ -308,11 +339,16 @@ class HelloModelTest {
         boolean completed = latch.await(1, TimeUnit.SECONDS);
 
         // Assert
-        assertThat(completed).isTrue();
-        assertThat(model.getMessages()).hasSize(3);
-        assertThat(model.getMessages().get(0)).isEqualTo(message1);
-        assertThat(model.getMessages().get(1)).isEqualTo(message2);
-        assertThat(model.getMessages().get(2)).isEqualTo(message3);
+        assertThat(completed)
+                .isTrue();
+        assertThat(model.getMessages())
+                .hasSize(3);
+        assertThat(model.getMessages().get(0))
+                .isEqualTo(message1);
+        assertThat(model.getMessages().get(1))
+                .isEqualTo(message2);
+        assertThat(model.getMessages().get(2))
+                .isEqualTo(message3);
     }
 
     @Test
@@ -325,14 +361,22 @@ class HelloModelTest {
         stubFor(post("/mytopic").willReturn(ok()));
 
         CountDownLatch latch = new CountDownLatch(1);
+        final boolean[] result = new boolean[1];
 
         // Act
-        model.sendMessageAsync(success -> latch.countDown());
+        model.sendMessageAsync(success -> {
+            result[0] = success;
+            latch.countDown();
+        });
 
         boolean completed = latch.await(1, TimeUnit.SECONDS);
 
         // Assert
-        assertThat(completed).isTrue();
+        assertThat(completed)
+                .isTrue();
+        assertThat(result[0])
+                .isTrue();
+
         verify(postRequestedFor(urlEqualTo("/mytopic"))
                 .withRequestBody(matching("Hello World")));
     }

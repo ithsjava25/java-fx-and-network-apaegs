@@ -1,14 +1,10 @@
 package com.example;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 public interface NtfyConnection {
-
-    default boolean send(String message) {
-        final boolean[] result = {false};
-        send(message, success -> result[0] = success);
-        return result[0];
-    }
 
     void send(String message, Consumer<Boolean> callback);
 
