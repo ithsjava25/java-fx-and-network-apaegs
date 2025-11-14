@@ -10,6 +10,11 @@ import java.net.http.HttpResponse;
 import java.util.Objects;
 import java.util.function.Consumer;
 
+/**
+ * Implementation of {@link NtfyConnection} using ntfy.sh-compatible HTTP calls.
+ * Supports sending messages and receiving a continuous stream of JSON messages
+ * from a selected topic.
+ */
 public class NtfyConnectionImpl implements NtfyConnection {
 
     private final HttpClient http = HttpClient.newHttpClient();
@@ -18,6 +23,10 @@ public class NtfyConnectionImpl implements NtfyConnection {
     private String currentTopic;
     private final ObjectMapper mapper = new ObjectMapper();
 
+    /**
+     * Creates a connection using values from a .env file:
+     * HOST_NAME, USER_ID and optionally DEFAULT_TOPIC.
+     */
     public NtfyConnectionImpl() {
         Dotenv dotenv = Dotenv.load();
         this.hostName = Objects.requireNonNull(dotenv.get("HOST_NAME"));
@@ -25,26 +34,39 @@ public class NtfyConnectionImpl implements NtfyConnection {
         this.currentTopic = dotenv.get("DEFAULT_TOPIC", "mytopic");
     }
 
+    /**
+     * Creates a connection with the given hostname and default values
+     * intended mainly for tests.
+     *
+     * @param hostName ntfy server base URL
+     */
     public NtfyConnectionImpl(String hostName) {
         this.hostName = hostName;
         this.userId = "testuser";
         this.currentTopic = "mytopic";
     }
 
-    public NtfyConnectionImpl(String hostName, String userId, String topic) {
-        this.hostName = hostName;
-        this.userId = userId;
-        this.currentTopic = topic;
-    }
+//    public NtfyConnectionImpl(String hostName, String userId, String topic) {
+//        this.hostName = hostName;
+//        this.userId = userId;
+//        this.currentTopic = topic;
+//    }
 
+    /** @return the user ID used for outgoing messages */
     public String getUserId() {
         return userId;
     }
 
+    /** @return the current topic */
     public String getCurrentTopic() {
         return currentTopic;
     }
 
+    /**
+     * Sets the topic to use for sending and receiving messages.
+     *
+     * @param topic the new topic name
+     */
     public void setCurrentTopic(String topic) {
         this.currentTopic = topic;
     }

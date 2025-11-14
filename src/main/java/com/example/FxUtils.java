@@ -2,9 +2,19 @@ package com.example;
 
 import javafx.application.Platform;
 
+/**
+ * Utility for running code on the JavaFX Application Thread.
+ */
 public final class FxUtils {
+
     /**
-     * Runs task on the FX thread if possible, otherwise inline (e.g., in tests/headless mode)
+     * Runs the given task on the FX thread.
+     * <p>
+     * If already on the FX thread, the task runs immediately.
+     * Otherwise, it is scheduled with {@code Platform.runLater}.
+     * If JavaFX is not initialized (e.g. in tests), the task runs inline.
+     *
+     * @param task the code to run (must not be null)
      */
     static void runOnFx(Runnable task) {
         if (task == null) {

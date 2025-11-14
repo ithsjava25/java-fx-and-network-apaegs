@@ -2,10 +2,10 @@ package com.example;
 
 import java.util.function.Consumer;
 
-
 /**
  * Interface for sending and receiving messages over an Ntfy connection.
  */
+
 public interface NtfyConnection {
    /**
      * Sends a message asynchronously.
@@ -26,7 +26,7 @@ public interface NtfyConnection {
 
     /**
      * Changes the current topic.
-     *
+     * Null or blank not accepted.
      * @param topic the new topic name
      */
     void setCurrentTopic(String topic);
