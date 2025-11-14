@@ -20,6 +20,8 @@ class HelloModelTest {
         System.out.println("Skipping FX initialization for headless test.");
     }
 
+
+
     @Test
     void sendMessageCallsConnectionWithMessageToSend() throws InterruptedException {
         // Arrange
@@ -136,10 +138,10 @@ class HelloModelTest {
         // Act
         spy.simulateIncoming(null);
 
-        boolean noAdd = latch.await(500, TimeUnit.MILLISECONDS);
+        boolean result = latch.await(500, TimeUnit.MILLISECONDS);
 
         // Assert
-        assertThat(noAdd)
+        assertThat(result)
                 .isFalse();
         assertThat(model.getMessages()).isEmpty();
     }
@@ -164,10 +166,10 @@ class HelloModelTest {
         spy.simulateIncoming(blank);
         spy.simulateIncoming(empty);
 
-        boolean noAdd = latch.await(500, TimeUnit.MILLISECONDS);
+        boolean result = latch.await(500, TimeUnit.MILLISECONDS);
 
         // Assert
-        assertThat(noAdd)
+        assertThat(result)
                 .isFalse();
         assertThat(model.getMessages()).isEmpty();
     }

@@ -18,6 +18,9 @@ public class HelloModel {
     private final StringProperty currentTopic = new SimpleStringProperty();
 
     public HelloModel(NtfyConnection connection) {
+        if (connection == null) {
+            throw new IllegalArgumentException("connection cannot be null");
+        }
         this.connection = connection;
         this.currentTopic.set(connection.getCurrentTopic());
         receiveMessage();

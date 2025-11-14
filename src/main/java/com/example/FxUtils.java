@@ -5,9 +5,12 @@ import javafx.application.Platform;
 public class FxUtils {
 
     /**
-     * Execute task on FX-thread if possible, otherwise inline.
+     * Runs task on the FX thread if possible, otherwise inline (e.g., in tests/headless mode)
      */
     static void runOnFx(Runnable task) {
+        if (task == null) {
+            throw new IllegalArgumentException("task cannot be null");
+        }
         try {
             if (Platform.isFxApplicationThread()) task.run();
             else Platform.runLater(task);
