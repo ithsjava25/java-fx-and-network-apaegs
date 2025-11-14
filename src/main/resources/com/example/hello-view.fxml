@@ -29,13 +29,10 @@
 
         <!-- Room changer -->
         <HBox alignment="CENTER_RIGHT" spacing="8" styleClass="topic-container">
-            <Label styleClass="topic-input-label" text="Change room:" />
             <TextField fx:id="topicInput" prefWidth="180" promptText="Enter room name" styleClass="topic-input" />
             <Button fx:id="changeTopicButton" onAction="#changeTopic" styleClass="topic-button" text="Join Room" />
         </HBox>
     </HBox>
-
-    <Separator />
 
     <!-- Message List -->
     <ListView fx:id="messageView" prefHeight="350" prefWidth="500" styleClass="message-list" VBox.vgrow="ALWAYS" />

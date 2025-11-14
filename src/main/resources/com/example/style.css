@@ -1,6 +1,6 @@
 /* ===== Huvudcontainer ===== */
 .chat-container {
-    -fx-background-color: #f0f2f5; /* mjuk ljusgrå bakgrund */
+    -fx-background-color: #5a6b81; /* mjuk ljusgrå bakgrund */
     -fx-padding: 16;
     -fx-spacing: 12;
     -fx-font-family: "Segoe UI", Arial, sans-serif;
@@ -8,7 +8,7 @@
 
 /* ===== Header ===== */
 .chat-title {
-    -fx-text-fill: #333333;
+    -fx-text-fill: #ffffff;
     -fx-font-size: 28px;
     -fx-font-weight: bold;
 }
@@ -17,12 +17,12 @@
 .topic-label {
     -fx-font-size: 16px;
     -fx-font-weight: bold;
-    -fx-text-fill: #555555;
+    -fx-text-fill: #ffffff;
 }
 
 /* ===== Room changer ===== */
 .topic-container {
-    -fx-background-color: #e3f2fd;
+    /*-fx-background-color: #ffffff;*/
     -fx-padding: 6 10;
     -fx-background-radius: 10;
     -fx-spacing: 6;
@@ -31,7 +31,7 @@
 
 .topic-input-label {
     -fx-font-size: 14px;
-    -fx-text-fill: #212121;
+    -fx-text-fill: #ffffff;
 }
 
 .topic-input {
@@ -50,7 +50,7 @@
 }
 
 .topic-button {
-    -fx-background-color: #4CAF50;
+    -fx-background-color: #103859;
     -fx-text-fill: white;
     -fx-background-radius: 6;
     -fx-padding: 6 14;
@@ -60,7 +60,7 @@
 }
 
 .topic-button:hover {
-    -fx-background-color: #45a049;
+    -fx-background-color: #1976D2;
 }
 
 .topic-button:disabled {
@@ -111,6 +111,7 @@
 .input-container {
     -fx-alignment: CENTER;
     -fx-spacing: 10;
+
 }
 
 .message-input {
@@ -120,17 +121,19 @@
     -fx-border-radius: 20;
     -fx-background-radius: 20;
     -fx-padding: 8 16;
-    -fx-font-size: 14;
+    -fx-font-size: 14px;
+    -fx-border-insets: 1; /* <-- kompenserar när border-width ändras */
 }
 
 .message-input:focused {
     -fx-border-color: #2196F3;
     -fx-border-width: 2;
+    -fx-border-insets: 0; /* <-- gör att layouten inte hoppar */
 }
 
 /* ===== Send button ===== */
 .send-button {
-    -fx-background-color: #2196F3;
+    -fx-background-color: #103859;
     -fx-text-fill: white;
     -fx-background-radius: 20;
     -fx-padding: 12 24;
