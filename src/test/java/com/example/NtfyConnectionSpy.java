@@ -21,6 +21,9 @@ public class NtfyConnectionSpy implements NtfyConnection{
     }
 
     public void simulateIncoming(NtfyMessageDto msg) {
-        if (handler != null) handler.accept(msg);
+        Consumer<NtfyMessageDto> localHandler = handler;
+        if (localHandler != null) {
+            localHandler.accept(msg);
+        }
     }
 }

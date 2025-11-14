@@ -80,20 +80,27 @@ public class HelloModel {
             return;
         }
 
-        connection.send(msg, success -> {
-            if (success) {
-                runOnFx(() -> {
-                    if (msg.equals(messageToSend.get())) {
-                        messageToSend.set("");
-                    }
-                });
-                callback.accept(true);
-            } else {
-                System.out.println("Failed to send message!");
-                callback.accept(false);
-            }
-        });
+        try {
+            connection.send(msg, success -> {
+                if (success) {
+                    runOnFx(() -> {
+                        if (msg.equals(messageToSend.get())) {
+                            messageToSend.set("");
+                        }
+                    });
+                    callback.accept(true);
+                } else {
+                    System.out.println("Failed to send message!");
+                    callback.accept(false);
+                }
+            });
+        } catch (Exception e) {
+            System.err.println("Exception while sending message: " + e.getMessage());
+            e.printStackTrace();
+            runOnFx(() -> callback.accept(false));
+        }
     }
+
 
     public void receiveMessage() {
         connection.receive(m -> {
