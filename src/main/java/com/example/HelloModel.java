@@ -71,6 +71,10 @@ public class HelloModel {
 //        return msg != null && !msg.isBlank();
 //    }
 
+    /**
+     * Sends message asynchronously
+     * Clears message input if message sent successfully
+     */
     public void sendMessageAsync(Consumer<Boolean> callback) {
         String msg = messageToSend.get();
         if (msg == null || msg.isBlank()) {
@@ -100,6 +104,10 @@ public class HelloModel {
         }
     }
 
+    /**
+     * Receiving messages from server for the current topic
+     * New messages added to observable list
+     */
 
     public void receiveMessage() {
         connection.receive(m -> {

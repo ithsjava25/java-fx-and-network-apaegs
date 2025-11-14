@@ -86,24 +86,15 @@ public class HelloController {
                     setText(null);
                     setGraphic(null);
                 } else {
-                    // Skapa bubble-label
                     Label bubble = new Label(msg.message());
                     bubble.setWrapText(true);
                     bubble.setMaxWidth(250);
                     bubble.setPadding(new Insets(10));
-                    bubble.getStyleClass().add("chat-bubble"); // Basstyle
+                    bubble.getStyleClass().addAll("chat-bubble", "chat-bubble-received");
 
                     HBox container = new HBox(bubble);
                     container.setPadding(new Insets(5));
-
-                    // Använd CSS-klasser för skickat/mottaget
-                    if (model.getUserId().equals(msg.id())) {
-                        bubble.getStyleClass().add("chat-bubble-sent");
-                        container.setAlignment(Pos.CENTER_RIGHT);
-                    } else {
-                        bubble.getStyleClass().add("chat-bubble-received");
-                        container.setAlignment(Pos.CENTER_LEFT);
-                    }
+                    container.setAlignment(Pos.CENTER_LEFT); // alla samma sida
 
                     setText(null);
                     setGraphic(container);
@@ -112,7 +103,10 @@ public class HelloController {
         });
 
 
-        // Scrolla ner till senaste meddelandet
+
+        /**
+         * Scroll down to last message automatically
+         */
         model.getMessages().addListener((javafx.collections.ListChangeListener<NtfyMessageDto>) change -> {
             Platform.runLater(() -> {
                 if (!messageView.getItems().isEmpty()) {
@@ -121,6 +115,11 @@ public class HelloController {
             });
         });
     }
+
+    /**
+     * Sends the message typed by the user
+     * Displays error if message send fails
+     */
 
     @FXML
     private void sendMessage(ActionEvent actionEvent) {
@@ -139,6 +138,12 @@ public class HelloController {
             }
         });
     }
+
+    /**
+     * Changes the chat topic to the one entered by user
+     * Clears topic input field
+     * @param actionEvent topic name
+     */
 
     @FXML
     private void changeTopic(ActionEvent actionEvent) {

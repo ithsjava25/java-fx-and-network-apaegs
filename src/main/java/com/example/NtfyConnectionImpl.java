@@ -49,6 +49,14 @@ public class NtfyConnectionImpl implements NtfyConnection {
         this.currentTopic = topic;
     }
 
+    /**
+     * Send a message to the current topic asynchronously
+     *
+     * @param message the message to send
+     * @param callback invoked when send completes; receives true on success, false on failure.
+     *                 May be called on any thread.
+     */
+
     @Override
     public void send(String message, Consumer<Boolean> callback) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
@@ -66,6 +74,13 @@ public class NtfyConnectionImpl implements NtfyConnection {
                 })
                 .thenAccept(callback);
     }
+
+    /**
+     * Starts receiving messages from the current topic.
+     * Calls the provided handler for each message
+     *
+     * @param messageHandler invoked for each incoming message; may be called on any thread
+     */
 
     @Override
     public void receive(Consumer<NtfyMessageDto> messageHandler) {
